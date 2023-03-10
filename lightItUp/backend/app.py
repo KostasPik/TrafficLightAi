@@ -18,17 +18,6 @@ db = client.LightItUp
 
 @app.route('/', methods=['GET'])
 def home():
-    lat_min = 37.937497
-    lon_min = 23.639687
-    lat_max = 38.001657
-    lon_max = 23.963229
-    coords_list = []
-    for _ in range(10000):
-        lat = random.uniform(lat_min, lat_max)
-        long = random.uniform(lon_min, lon_max)
-        traffic = random.randint(0,2)
-        coords_list.append({"type":"Point",'coordinates':[long, lat],'traffic':traffic})
-    db.light.insert_many(coords_list)
     return '<h1>Hello World</h1>'
 
 
@@ -62,3 +51,21 @@ def get_traffic():
     # query = {}
     traffic_data = db.light.find(query, {'_id': 0})
     return jsonify(to_geoJson(list(traffic_data)))
+
+
+# this route populates db with 10K random points near Athens.
+# PLEASE DON'T ACCESS IT 
+@app.route('/populate-database/', methods=['GET'])
+def populate_db_random_points():
+    lat_min = 37.937497
+    lon_min = 23.639687
+    lat_max = 38.001657
+    lon_max = 23.963229
+    coords_list = []
+    for _ in range(10000):
+        lat = random.uniform(lat_min, lat_max)
+        long = random.uniform(lon_min, lon_max)
+        traffic = random.randint(0,2)
+        coords_list.append({"type":"Point",'coordinates':[long, lat],'traffic':traffic})
+    db.light.insert_many(coords_list)
+    return '<h1>Done</h1>'
