@@ -1,5 +1,11 @@
 from datetime import datetime
 
+#   Takes the average of traffic
+def traffic_result():
+    pass
+
+
+
 
 def traffic_counter(present_cars_count, previous_time, previous_cars_count, first_frame):
     present_time = datetime.now()
@@ -9,15 +15,15 @@ def traffic_counter(present_cars_count, previous_time, previous_cars_count, firs
 
     # if time difference between counts is less than 3 don't jump to conclusions about traffic
     if not seconds_passed >= 3:
-        return False
+        return False, None
 
     # if we didn't have any vehicles in previous frame don't jump to conclusions about traffic
     if first_frame:
-        return True
+        return False, None
 
     if not present_cars_count > 0 or not previous_cars_count > 0:
         print("No Traffic")
-        return True
+        return True, 0
     # print("Present Cars", present_cars_count)
     # print("Previous Cars", previous_cars_count)
     # print("Seconds Passed", seconds_passed)
@@ -27,11 +33,11 @@ def traffic_counter(present_cars_count, previous_time, previous_cars_count, firs
 
     if cars_diff <= 0:
         print("Red Traffic")
-        return True
+        return True, 2
 
     if cars_diff <= 2:
         print("Yellow Traffic")
-        return True
+        return True, 1
 
     print("No Traffic")
-    return True
+    return True, 0

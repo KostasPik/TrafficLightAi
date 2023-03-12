@@ -1,10 +1,14 @@
 mapboxgl.accessToken = 'pk.eyJ1Ijoiam1sYWJzIiwiYSI6Imlnc1pXbncifQ.1U4VwxWkGS_Y3TpZ6-sf4A'
+
+const athensLat = 37.983810;
+const athensLong = 23.727539;
+
 const map = new mapboxgl.Map({
     container: 'map', // container ID
     projection:'equirectangular',
     // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
     style: 'mapbox://styles/mapbox/streets-v12', // style URL
-    center: [23.727539, 37.983810], // starting position [lng, lat]
+    center: [athensLong, athensLat], // starting position [lng, lat]
     zoom: 13 // starting zoom
 });
 
@@ -111,6 +115,24 @@ async function fetchTrafficData() {
                 ]
             }
         });
+
+        map.on('click', 'unclustered-point', (e) => {
+            //  Traffic Number 0 / 1 / 2
+            const trafficNumber = e.features[0].properties.traffic;
+            //  Coordinates of popup
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            
+            var trafficLabel = '';
+            if (trafficNumber === 0) trafficLabel = 'No traffic';
+            if (trafficNumber === 1) trafficLabel = 'Orange Traffic';
+            if (trafficNumber === 2) trafficLabel = 'Red Traffic';
+            if (trafficLabel == '') trafficLabel = 'No Traffic Data Available';
+            
+            //  Sets up Pop-Up text
+            new mapboxgl.Popup().setLngLat(coordinates).setHTML(
+                `${trafficLabel}`
+            ).addTo(map);
+        })
 
     })
 

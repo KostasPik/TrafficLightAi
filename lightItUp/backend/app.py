@@ -1,10 +1,13 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from bson.son import SON
 from pymongo import MongoClient
 import random
+from utils import to_geoJson
+
+
 app = Flask(__name__)
-app.secret_key=  b't\x08\xe3u\x12\x93\xc5r\xf2\xa9;\xb7|@\x003'
+app.secret_key=  b't\x08\xe3u\x12\x93\xc5r\xf3\xa6;\xb7|@\x003'
 app.config['TEMPLATES_AUTO_RELOAD'] = True  
 CORS(app)
 
@@ -21,23 +24,6 @@ def home():
     return '<h1>Hello World</h1>'
 
 
-def to_geoJson(json_data):
-    print(json_data[0]['type'])
-    geoJson = {
-        'type':'FeatureCollection',
-        'features':[{
-        
-        'type':'Feature',
-        'properties': {
-        'traffic':i['traffic']
-        },
-        'geometry':{
-        'type':i['type'],
-        'coordinates':i['coordinates'] 
-        }}
-         for i in json_data]
-    }
-    return geoJson
 
 
 @app.route('/get-traffic/', methods=['GET'])
@@ -51,6 +37,20 @@ def get_traffic():
     # query = {}
     traffic_data = db.light.find(query, {'_id': 0})
     return jsonify(to_geoJson(list(traffic_data)))
+
+
+
+
+@app.route('/update-light-traffic/', methods=['POST'])
+def update_light_traffic():
+    traffic_number = int(request.form.get('traffic'))
+    if traffic_number == 0:
+        print("Green")
+    if traffic_number == 1:
+        print("Yellow")
+    if traffic_number == 2:
+        print("Red")    
+    return '<h1>Completed Update</h1>'
 
 
 # this route populates db with 10K random points near Athens.
