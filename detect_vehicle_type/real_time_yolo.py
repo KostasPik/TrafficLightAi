@@ -16,11 +16,15 @@ output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
 # Loading image
-cap = cv2.VideoCapture("../video_samples/road5.mp4")
+cap = cv2.VideoCapture("../video_samples/video_samples/traffic8.mp4")
+# cap = cv2.VideoCapture(0)
+
 
 font = cv2.FONT_HERSHEY_PLAIN
 starting_time = time.time()
 frame_id = 0
+
+
 while 1:
     _, frame = cap.read()
     frame_id += 1

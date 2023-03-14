@@ -14,9 +14,9 @@ TRAFFIC_AVERAGE_COUNTS = {
 
 SERVER_URL = 'http://localhost:5000/update-light-traffic/'
 
-cap = cv2.VideoCapture("../video_samples/video_samples/traffic6.mp4")
+cap = cv2.VideoCapture("../video_samples/video_samples/road8.mp4")
 kernel = None
-object_detector = cv2.createBackgroundSubtractorMOG2(history=100, varThreshold=40, detectShadows=True)
+object_detector = cv2.createBackgroundSubtractorMOG2(history=70, varThreshold=40, detectShadows=True)
 previous_cars_count = 0
 previous_time = datetime.now()
 first_frame = True
@@ -30,7 +30,7 @@ while 1:
 
     height, width, _ = frame.shape
 
-    roi = frame[550:height, 0:width]  # region of interest
+    roi = frame[400:height, 0:width]  # region of interest
 
     # Object Detection
     mask = object_detector.apply(roi)
@@ -77,7 +77,8 @@ while 1:
             post_data = {
                 'traffic': average_calculator(TRAFFIC_AVERAGE_COUNTS)
             }
-            requests.post(SERVER_URL, post_data)  # This needs to become non-blocking later on!!!!
+            # requests.post(SERVER_URL, post_data)  # This needs to become non-blocking later on!!!!
+            print("FINAL RESULT", average_calculator(TRAFFIC_AVERAGE_COUNTS))
             decision_counter = 0
             TRAFFIC_AVERAGE_COUNTS = {'0': 0, '1': 0, '2': 0}
 
