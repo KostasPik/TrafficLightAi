@@ -1,20 +1,15 @@
 from datetime import datetime
 
+def average_calculator(traffic_average_counts):
+    total_items = 0
+    nominator = 0
+    for key in traffic_average_counts.keys():
+        nominator += int(key)*traffic_average_counts[key]
+        total_items += traffic_average_counts[key]
+    return round(nominator/total_items, )
 
 
-def traffic_counter(present_cars_count, previous_time, previous_cars_count, first_frame):
-    present_time = datetime.now()
-
-    # get time difference in seconds
-    seconds_passed = (present_time - previous_time).seconds
-
-    # if time difference between counts is less than 3 don't jump to conclusions about traffic
-    if not seconds_passed >= 3:
-        return False, None
-
-    # if we didn't have any vehicles in previous frame don't jump to conclusions about traffic
-    if first_frame:
-        return False, None
+def traffic_counter(present_cars_count, previous_time, previous_cars_count):
 
     if not present_cars_count > 0 or not previous_cars_count > 0:
         print("No Traffic")

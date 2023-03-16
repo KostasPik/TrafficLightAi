@@ -41,10 +41,12 @@ while 1:
     class_ids = []
     confidences = []
     boxes = []
+
     for out in outs:
         for detection in out:
             scores = detection[5:]
             class_id = np.argmax(scores)
+            print(class_id)
             confidence = scores[class_id]
             if confidence > 0.2:
                 # Object detected
