@@ -30,7 +30,7 @@ def home():
 def get_traffic():
     #   this query finds nearest coordinates to the point:
     #   long = 23.727539, lat = 37.983810
-    max_distance = 1000
+    max_distance = 3*1000
     latitude = 37.983810
     longitude = 23.727539
     query = {'coordinates': {'$near': SON([('$geometry', SON([('type', 'Point'), ('coordinates', [longitude, latitude])])), ('$maxDistance', max_distance)])}}
@@ -69,3 +69,6 @@ def populate_db_random_points():
         coords_list.append({"type":"Point",'coordinates':[long, lat],'traffic':traffic})
     db.light.insert_many(coords_list)
     return '<h1>Done</h1>'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)

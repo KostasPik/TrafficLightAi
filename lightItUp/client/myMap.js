@@ -14,10 +14,10 @@ const map = new mapboxgl.Map({
 
 
 
-
+const SERVER_URL = '192.168.1.9'
 
 async function fetchTrafficData() {
-    const response = await fetch('http://127.0.0.1:5000/get-traffic/');
+    const response = await fetch(`http://${SERVER_URL}:5000/get-traffic/`);
     const trafficDataJson = await response.json();
     console.log(trafficDataJson);
 
