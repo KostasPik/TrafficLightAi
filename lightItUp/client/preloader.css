@@ -115,6 +115,8 @@ img {
     }
   }
   body {
+    height: 100vh;
+    width: 100%;
     background: var(--background-color);
     font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", Tahoma, Sans-Serif;
   }

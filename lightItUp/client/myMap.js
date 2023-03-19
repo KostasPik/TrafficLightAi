@@ -25,6 +25,10 @@ async function fetchTrafficData() {
     //     new mapboxgl.Marker().setLngLat(obj.coordinates).addTo(map);
     // })
 
+    // setTimeout(() => {
+
+    // }, 3000)
+
     // Mapbox expressions to filter based on property 'traffic' : 0/1/2
     const traffic0 = ['==', ['get', 'traffic'], 0] 
     const traffic1 = ['==', ['get', 'traffic'], 1]
