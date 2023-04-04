@@ -1,55 +1,57 @@
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
-
-#include <SoftwareSerial.h> 
+#include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 
-//create an RF24 object
-RF24 radio(9, 8);  // CE, CSN
-
-//address through which two modules communicate.
-const byte address[6] = "00001";
+int RXPin = 2;
+int TXPin = 3;
+int GPSBaud = 9600;
 
 TinyGPSPlus gps;
-SoftwareSerial SerialGPS(3, 4);
 
-void setup() {
+SoftwareSerial gpsSerial(RXPin, TXPin);
+
+RF24 radio(9, 8);  // CE, CSN
+
+struct dataStruct{
+  double latitude;
+  double longitude;
+}gpsData;
+
+
+
+void setup()
+{
+  
   Serial.begin(9600);
-  SerialGPS.begin(9600); // connect gps sensor 
+  gpsSerial.begin(GPSBaud);
+
+  
+  //  Setup transmitter radio
   radio.begin();
-   
-  //set the address
-  radio.openWritingPipe(address);
-  
-  //Set module as transmitter
+  radio.openWritingPipe(0xF0F0F0F0E1LL);
+  radio.setChannel(0x76);
+  radio.setPALevel(RF24_PA_MAX);
+  radio.setDataRate(RF24_250KBPS);
   radio.stopListening();
+  radio.enableDynamicPayloads();
+  radio.powerUp();
+}
 
+void loop()
+{
+  char text = 'b';
+  radio.write(&text, sizeof(text));
+  delay(2000);
   
+  while (gpsSerial.available() > 0)
+   if (gps.encode(gpsSerial.read()))
+      displayInfo();
 
 }
 
-void loop() {
-    while (SerialGPS.available() > 0)
-    if (gps.encode(SerialGPS.read()))
-      {
-        showData();
-        const char text[] = "Hello World";
-        radio.write(&text, sizeof(text));
-        delay(1000);
-        Serial.println("sent text!");
-      }
-//  if (millis() > 5000 && gps.charsProcessed() < 10)
-//  {
-//    Serial.println("GPS NOT DETECTED!");
-//    while(true);
-//  }
-   //Send message to receiver
- 
-
-}
-
-void showData()
+void displayInfo()
 {
   if (gps.location.isValid())
   {
@@ -62,7 +64,7 @@ void showData()
   }
   else
   {
-    Serial.println("Location is not available");
+    Serial.println("Location: Not Available");
   }
   
   Serial.print("Date: ");
@@ -101,5 +103,5 @@ void showData()
 
   Serial.println();
   Serial.println();
-  delay(5000);
+  delay(1000);
 }

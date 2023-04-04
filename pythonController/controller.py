@@ -33,7 +33,7 @@ ROTATIONS = {
     },
 }
 
-arduino = serial.Serial('COM3', 9600, timeout=0.1, write_timeout=0.1)
+arduino = serial.Serial('COM6', 9600, timeout=0.01, write_timeout=0.01)
 arduino.flush()
 arduino.reset_output_buffer()
 arduino.reset_input_buffer()
@@ -55,7 +55,7 @@ class TrafficLight:
     def __init__(self):
         self.prev_time = datetime.now()
         self.color = 'green'  # green/orange/red
-        self.cap = cv2.VideoCapture('../video_samples/video_samples/traffic6.mp4')
+        self.cap = cv2.VideoCapture('../video_samples/video_samples/traffic8.mp4')
 
         self.TRAFFIC_AVERAGE_COUNTS = {
             '0': 0,  # Green
@@ -73,10 +73,17 @@ class TrafficLight:
         self.truck_detected = False
 
         # Emergency vehicle approaching...
-        self.ambulance_coming = False
+        self.emergency_vehicle = False
 
     def main(self):
         while 1:
+            arduino.flush()
+            arduino.reset_input_buffer()
+            arduino.reset_output_buffer()
+            ard_emerg_line = arduino.readline().decode("utf-8", "ignore").strip()
+            if ard_emerg_line:
+                # print(ard_emerg_line)
+                self.emergency_vehicle = True
             #   Check if light is green and add additional_time for emergency to pass....
             ret, frame = self.cap.read()
             if not ret:
@@ -91,8 +98,8 @@ class TrafficLight:
 
             _, mask = cv2.threshold(mask, 254, 255, cv2.THRESH_BINARY)  # Extract object shadows
 
-            mask = cv2.erode(mask, kernel, iterations=1)
-            mask = cv2.dilate(mask, kernel, iterations=2)
+            # mask = cv2.erode(mask, kernel, iterations=1)
+            # mask = cv2.dilate(mask, kernel, iterations=2)
 
 
             self.change_color()         # Checks if traffic light should change
@@ -103,7 +110,7 @@ class TrafficLight:
                     self.truck_detected = True
                     self.additional_time = ADDITIONAL_TIME_IN_CASE_OF_TRUCK
 
-            cv2.imshow('mask', mask)
+            # cv2.imshow('mask', mask)
             cv2.imshow("Frame", frame)
             # cv2.imshow("Mask", mask)
             key = cv2.waitKey(30)
@@ -112,6 +119,10 @@ class TrafficLight:
 
     def change_color(self):
         time_now = datetime.now()
+
+        # if emergency vehicle is approaching don't change green light
+        if self.color == 'green' and self.emergency_vehicle:
+            return
 
         if not (time_now - self.prev_time).seconds - self.additional_time >= ROTATIONS[self.color]['duration']:
             return False
