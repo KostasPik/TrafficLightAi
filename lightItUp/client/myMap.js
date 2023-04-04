@@ -13,13 +13,19 @@ const map = new mapboxgl.Map({
 });
 
 
+const preloaderDiv = document.getElementById('preloader');
+const mapDiv = document.getElementById('map');
+document.getElementById('preloader-button').addEventListener('click', async () => {
+    fetchTrafficData()
+    mapDiv.hidden = false;
+    preloaderDiv.remove();
+    
+})
 
 const SERVER_URL = '192.168.1.9'
-
 async function fetchTrafficData() {
     const response = await fetch(`http://${SERVER_URL}:5000/get-traffic/`);
     const trafficDataJson = await response.json();
-    console.log(trafficDataJson);
 
     // trafficJson.forEach((obj) => {
     //     new mapboxgl.Marker().setLngLat(obj.coordinates).addTo(map);
@@ -145,4 +151,3 @@ async function fetchTrafficData() {
 
 
 
-fetchTrafficData();

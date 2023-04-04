@@ -4,6 +4,9 @@ from traffic import traffic_count
 from utils import average_calculator
 import serial
 import numpy as np
+import httpx
+import requests
+import asyncio
 
 GREEN_TIME_SECONDS = 20
 ORANGE_TIME_SECONDS = 5
@@ -151,6 +154,17 @@ class TrafficLight:
             if self.decision_made_for_traffic == NUMBER_OF_COUNTS_TO_MAKE_TRAFFIC_DECISION:
                 average_traffic = average_calculator(self.TRAFFIC_AVERAGE_COUNTS)
                 print("DECISION MADE", average_traffic)
+
+                # HERE WE SHOULD MAKE AN HTTP POST REQUEST TO THE SERVER
+                # IT SHOULD BE ASYNC, OTHERWISE THE VIDEO PAUSES UNTIL POST REQUEST IS FINISHED
+
+                # {
+                #  id: objectID, (mongoDB objectID)
+                #  traffic_decision: int
+                # }
+
+
+
                 self.TRAFFIC_AVERAGE_COUNTS = {'0': 0, '1': 0, '2': 0}
                 self.decision_made_for_traffic = 0
             self.previous_cars_count, traffic_decision = traffic_count(mask, self.prev_decision_time,
@@ -206,7 +220,6 @@ class TrafficLight:
                 cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
                 cv2.putText(frame, label + " " + str(round(confidence, 2)), (x, y + 30), font, 3, color, 3)
         return truck_in_frame, frame
-
 
 
 light = TrafficLight()

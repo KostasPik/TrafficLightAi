@@ -5,30 +5,62 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LightItUp!</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <!-- <link rel="stylesheet" href="./styles.css" /> -->
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
     <link rel="stylesheet" href="./preloader.css" />
 
     <style>
+        :root {
+        --background-color: #FFFAFA;
+        --animation-color: #4ca0d4;
+        }
         body {
             height: 100%;
             width: 100%;
             margin:0;
             padding:0;
+            background-color: var(--background-color);
         }
         #map { 
             position: absolute; 
             top: 0; 
             bottom: 0; 
-            height: 100%;
-            width: 100%; 
+            height: 100vh;
+            width: 100vw;
         }
     </style>
 </head>
 <body>
-    <div id="map"></div>
+    <div id='preloader'>    
+        <h1 class="title">L<img src="traffic.png"></img>ghtItUp</h1>
+        <div class="loading-window">
+            <div class="car">
+                <div class="strike"></div>
+                <div class="strike strike2"></div>
+                <div class="strike strike3"></div>
+                <div class="strike strike4"></div>
+                <div class="strike strike5"></div>
+                <div class="car-detail spoiler"></div>
+                <div class="car-detail back"></div>
+                <div class="car-detail center"></div>
+                <div class="car-detail center1"></div>
+                <div class="car-detail front"></div>
+                <div class="car-detail wheel"></div>
+                <div class="car-detail wheel wheel2"></div>
+            </div>
+        
+            <div class="text">
+                <span>Loading</span><span class = "dots">...</span>
+            </div>
+        </div>
+        <button type="button" id="preloader-button">View Map</button>
+        
+    </div>
+
+    <div id="map" hidden></div>
     <!-- <script src="./map.js" ></script> -->
     <script src="./myMap.js"></script>
+
 </body>
 </html>
