@@ -43,7 +43,24 @@ def get_traffic():
 
 @app.route('/update-light-traffic/', methods=['POST'])
 def update_light_traffic():
-    traffic_number = int(request.form.get('traffic'))
+    traffic_number = request.form.get('traffic')
+    
+    if not traffic_number or not traffic_number.isdigit():
+        return "expected digit as traffic number"
+    
+    traffic_number = int(traffic_number)
+
+    if traffic_number < 0 or traffic_number > 3:
+        return "error: traffic number not within exprected limits"
+    
+
+    traffic_light_id = request.form.get('traffic_light_id')
+    if not traffic_light_id:
+        return "error: expected traffic light id"
+    
+    
+    db.collection.update_one({"_id": traffic_light_id}, {"traffic": traffic_number})
+
     if traffic_number == 0:
         print("Green")
     if traffic_number == 1:
