@@ -27,7 +27,7 @@ function Map() {
         const preloaderDiv = document.getElementById('preloader');
         const mapDiv = document.getElementById('map');
         
-        const SERVER_URL = '192.168.1.9'
+        const SERVER_URL = '192.168.1.15'
         async function fetchTrafficData() {
             const response = await fetch("http://"+SERVER_URL+":5000/get-traffic/");
             const trafficDataJson = await response.json();
@@ -66,7 +66,7 @@ function Map() {
                     id: 'clusters',
                     type: 'circle',
                     source: 'trafficLights',
-                    filter: ['has', 'point_count'],
+                    filter: ['==','cluster', true ],
                     paint: {
                         // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
                         // with three steps to implement three types of circles:
@@ -98,7 +98,7 @@ function Map() {
                     id: 'cluster-count',
                     type: 'symbol',
                     source: 'trafficLights',
-                    filter: ['has', 'point_count'],
+                    filter: ['==','cluster', true ],
                     layout: {
                         'text-field': ['get', 'point_count_abbreviated'],
                         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
