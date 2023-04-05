@@ -1,3 +1,5 @@
 venv
 .idea
 video_samples
+__pycache__
+
