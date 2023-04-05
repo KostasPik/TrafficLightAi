@@ -7,6 +7,8 @@ import numpy as np
 import httpx
 import requests
 import asyncio
+import threading
+
 
 GREEN_TIME_SECONDS = 20
 ORANGE_TIME_SECONDS = 5
@@ -154,6 +156,7 @@ class TrafficLight:
             if self.decision_made_for_traffic == NUMBER_OF_COUNTS_TO_MAKE_TRAFFIC_DECISION:
                 average_traffic = average_calculator(self.TRAFFIC_AVERAGE_COUNTS)
                 print("DECISION MADE", average_traffic)
+                threading.Thread(target=self.update_db_traffic_state, args=[average_traffic]).start()
 
                 # HERE WE SHOULD MAKE AN HTTP POST REQUEST TO THE SERVER
                 # IT SHOULD BE ASYNC, OTHERWISE THE VIDEO PAUSES UNTIL POST REQUEST IS FINISHED
@@ -222,5 +225,8 @@ class TrafficLight:
         return truck_in_frame, frame
 
 
+    def update_db_traffic_state(self, average_traffic):
+        requests.get("https://www.google.com")
+        print("Made request")
 light = TrafficLight()
 light.main()
