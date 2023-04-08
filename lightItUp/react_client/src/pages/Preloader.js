@@ -22,9 +22,9 @@ function Preloader() {
                 <div class="car-detail wheel wheel2"></div>
             </div>
         
-            <div class="text">
+            {/* <div class="text">
                 <span>Loading</span><span class = "dots">...</span>
-            </div>
+            </div> */}
         </div>
         <div className='nav-button'>
         <Link id="preloader-button" to='/map/'>View Map</Link>

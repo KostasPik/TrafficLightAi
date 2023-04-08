@@ -4,6 +4,7 @@ from bson.son import SON
 from pymongo import MongoClient
 import random
 from utils import to_geoJson
+from bson.objectid import ObjectId
 
 
 app = Flask(__name__)
@@ -16,25 +17,14 @@ db = client.LightItUp
 
 
 
-
-
-
-@app.route('/', methods=['GET'])
-def home():
-    return '<h1>Hello World</h1>'
-
-
-
-
 @app.route('/get-traffic/', methods=['GET'])
 def get_traffic():
     #   this query finds nearest coordinates to the point:
     #   long = 23.727539, lat = 37.983810
-    max_distance = 3*1000
+    max_distance = 3*1000 # returns all points within 2km of center
     latitude = 37.983810
     longitude = 23.727539
     query = {'coordinates': {'$near': SON([('$geometry', SON([('type', 'Point'), ('coordinates', [longitude, latitude])])), ('$maxDistance', max_distance)])}}
-    # query = {}
     traffic_data = db.light.find(query, {'_id': 0})
     return jsonify(to_geoJson(list(traffic_data)))
 
@@ -50,17 +40,14 @@ def update_light_traffic():
     
     traffic_number = int(traffic_number)
 
-    if traffic_number < 0 or traffic_number > 3:
+    if traffic_number < 0 or traffic_number > 2:
         return "error: traffic number not within exprected limits"
     
 
     traffic_light_id = request.form.get('traffic_light_id')
     if not traffic_light_id:
         return "error: expected traffic light id"
-    
-    
-    db.collection.update_one({"_id": traffic_light_id}, {"traffic": traffic_number})
-
+    db.light.find_one_and_update({"_id": ObjectId(traffic_light_id)}, {"$set":{"traffic": traffic_number}})
     if traffic_number == 0:
         print("Green")
     if traffic_number == 1:

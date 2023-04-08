@@ -22,7 +22,8 @@ function Map() {
             center: [athensLong, athensLat], // starting position [lng, lat]
             zoom: 13 // starting zoom
         });
-        
+        map.addControl(new mapboxgl.NavigationControl());
+
         
         const preloaderDiv = document.getElementById('preloader');
         const mapDiv = document.getElementById('map');
@@ -139,8 +140,8 @@ function Map() {
                     
                     var trafficLabel = '';
                     if (trafficNumber === 0) trafficLabel = 'No traffic';
-                    if (trafficNumber === 1) trafficLabel = 'Orange Traffic';
-                    if (trafficNumber === 2) trafficLabel = 'Red Traffic';
+                    if (trafficNumber === 1) trafficLabel = 'Medium Traffic';
+                    if (trafficNumber === 2) trafficLabel = 'High Traffic';
                     if (trafficLabel == '') trafficLabel = 'No Traffic Data Available';
                     
                     //  Sets up Pop-Up text

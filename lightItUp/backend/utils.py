@@ -3,6 +3,8 @@
 
 
 def to_geoJson(json_data):
+    if len(json_data) > 1200:
+        json_data = json_data[:1200]
     geoJson = {
         'type':'FeatureCollection',
         'features':[{

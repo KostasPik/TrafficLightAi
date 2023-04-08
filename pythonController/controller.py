@@ -4,9 +4,7 @@ from traffic import traffic_count
 from utils import average_calculator
 import serial
 import numpy as np
-import httpx
 import requests
-import asyncio
 import threading
 
 
@@ -37,6 +35,9 @@ ROTATIONS = {
         'next': 'green',
     },
 }
+
+
+SERVER_URL = 'http://127.0.0.1:5000/update-light-traffic/'
 
 arduino = serial.Serial('COM6', 9600, timeout=0.01, write_timeout=0.01)
 arduino.flush()
@@ -82,14 +83,19 @@ class TrafficLight:
 
     def main(self):
         while 1:
-            arduino.flush()
-            arduino.reset_input_buffer()
-            arduino.reset_output_buffer()
+            # arduino.flush()
+            # arduino.reset_input_buffer()
+            # arduino.reset_output_buffer()
             ard_emerg_line = arduino.readline().decode("utf-8", "ignore").strip()
-            if ard_emerg_line:
+            if ard_emerg_line == 'b':
                 # print(ard_emerg_line)
                 self.emergency_vehicle = True
+                print("EMERGENCY ON")
             #   Check if light is green and add additional_time for emergency to pass....
+            elif ard_emerg_line == 'n':
+                self.emergency_vehicle = False
+                print("EMERGENCY FALSE")
+
             ret, frame = self.cap.read()
             if not ret:
                 return None
@@ -123,11 +129,14 @@ class TrafficLight:
 
 
     def change_color(self):
-        time_now = datetime.now()
-
         # if emergency vehicle is approaching don't change green light
         if self.color == 'green' and self.emergency_vehicle:
             return
+
+
+        time_now = datetime.now()
+
+
 
         if not (time_now - self.prev_time).seconds - self.additional_time >= ROTATIONS[self.color]['duration']:
             return False
@@ -226,7 +235,11 @@ class TrafficLight:
 
 
     def update_db_traffic_state(self, average_traffic):
-        requests.get("https://www.google.com")
+        data = {
+            "traffic_light_id": '640ba7c681d0144b522a0afb',
+            "traffic": average_traffic
+        }
+        requests.post(SERVER_URL, data=data)
         print("Made request")
 light = TrafficLight()
 light.main()
