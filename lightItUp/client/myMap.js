@@ -22,10 +22,10 @@ document.getElementById('preloader-button').addEventListener('click', async () =
     
 })
 
-const SERVER_URL = '192.168.1.9'
+const SERVER_URL = 'lightitup-1-e1507095.deta.app'
 async function fetchTrafficData() {
-    const response = await fetch(`http://${SERVER_URL}:5000/get-traffic/`);
-    const trafficDataJson = await response.json();
+    // const response = await fetch(`http://${SERVER_URL}:5000/get-traffic/`);
+    
 
     // trafficJson.forEach((obj) => {
     //     new mapboxgl.Marker().setLngLat(obj.coordinates).addTo(map);
@@ -40,9 +40,11 @@ async function fetchTrafficData() {
     const traffic1 = ['==', ['get', 'traffic'], 1]
     const traffic2 = ['==', ['get', 'traffic'], 2]
 
-    map.on('load', () => {
+    map.on('load', async () => {
+        const response = await fetch(`https://${SERVER_URL}/get-traffic/`);
+        const trafficDataJson = await response.json();
 
-        map.addSource('trafficLights', {
+        await map.addSource('trafficLights', {
             type: 'geojson',
             // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
             // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.

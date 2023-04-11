@@ -29,26 +29,18 @@ function Map() {
         const mapDiv = document.getElementById('map');
         
         const SERVER_URL = 'lightitup-1-e1507095.deta.app'
-        async function fetchTrafficData() {
-            const response = await fetch("https://"+SERVER_URL+"/get-traffic/");
-            const trafficDataJson = await response.json();
         
-            // trafficJson.forEach((obj) => {
-            //     new mapboxgl.Marker().setLngLat(obj.coordinates).addTo(map);
-            // })
-        
-            // setTimeout(() => {
-        
-            // }, 3000)
         
             // Mapbox expressions to filter based on property 'traffic' : 0/1/2
             const traffic0 = ['==', ['get', 'traffic'], 0] 
             const traffic1 = ['==', ['get', 'traffic'], 1]
             const traffic2 = ['==', ['get', 'traffic'], 2]
         
-            await map.on('load', () => {
+            map.on('load', async () => {
+                const response = await fetch("https://"+SERVER_URL+"/get-traffic/");
+                const trafficDataJson = await response.json();
         
-                map.addSource('trafficLights', {
+               await map.addSource('trafficLights', {
                     type: 'geojson',
                     // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
                     // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
@@ -63,7 +55,7 @@ function Map() {
                     }
                 });
         
-                map.addLayer({
+                await map.addLayer({
                     id: 'clusters',
                     type: 'circle',
                     source: 'trafficLights',
@@ -95,7 +87,7 @@ function Map() {
                     }
                 });
         
-                map.addLayer({
+                await map.addLayer({
                     id: 'cluster-count',
                     type: 'symbol',
                     source: 'trafficLights',
@@ -107,7 +99,7 @@ function Map() {
                     }
                 });
             
-                map.addLayer({
+                await map.addLayer({
                     id: 'unclustered-point',
                     type: 'circle',
                     source: 'trafficLights',
@@ -132,7 +124,7 @@ function Map() {
                     }
                 });
         
-                map.on('click', 'unclustered-point', (e) => {
+                await map.on('click', 'unclustered-point', (e) => {
                     //  Traffic Number 0 / 1 / 2
                     const trafficNumber = e.features[0].properties.traffic;
                     //  Coordinates of popup
@@ -153,8 +145,8 @@ function Map() {
             })
         
         
-        }
-        fetchTrafficData();
+        
+        // fetchTrafficData();
         `
         document.body.append(inlineScript);
     }, [])
