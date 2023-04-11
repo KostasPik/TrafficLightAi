@@ -28,9 +28,9 @@ function Map() {
         const preloaderDiv = document.getElementById('preloader');
         const mapDiv = document.getElementById('map');
         
-        const SERVER_URL = '192.168.1.9'
+        const SERVER_URL = 'lightitup-1-e1507095.deta.app'
         async function fetchTrafficData() {
-            const response = await fetch("http://"+SERVER_URL+":5000/get-traffic/");
+            const response = await fetch("https://"+SERVER_URL+"/get-traffic/");
             const trafficDataJson = await response.json();
         
             // trafficJson.forEach((obj) => {
@@ -46,7 +46,7 @@ function Map() {
             const traffic1 = ['==', ['get', 'traffic'], 1]
             const traffic2 = ['==', ['get', 'traffic'], 2]
         
-            map.on('load', () => {
+            await map.on('load', () => {
         
                 map.addSource('trafficLights', {
                     type: 'geojson',
